@@ -161,5 +161,4 @@ public class UserController {
                 .orElse(0);
         return ++currentMaxId;
     }
-
 }
