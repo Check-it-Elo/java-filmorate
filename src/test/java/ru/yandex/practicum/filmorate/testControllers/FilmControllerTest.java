@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,9 +25,7 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setName("Film 1");
         film.setDescription("Description of film 1");
-        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1));
         film.setDuration(120);
 
         Film addedFilm = filmController.addFilm(film);
@@ -45,9 +42,7 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setName("");
         film.setDescription("Description of film");
-        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1));
         film.setDuration(120);
 
         Exception exception = assertThrows(EnterExeption.class, () -> filmController.addFilm(film));
@@ -59,9 +54,7 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setName("Film");
         film.setDescription("A".repeat(201));  // 201 character long description
-        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1));
         film.setDuration(120);
 
         Exception exception = assertThrows(EnterExeption.class, () -> filmController.addFilm(film));
@@ -73,9 +66,7 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setName("Film");
         film.setDescription("Description of film");
-        film.setReleaseDate(LocalDate.of(1800, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        film.setReleaseDate(LocalDate.of(1800, Month.JANUARY, 1));
         film.setDuration(120);
 
         Exception exception = assertThrows(EnterExeption.class, () -> filmController.addFilm(film));
@@ -87,9 +78,7 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setName("Film");
         film.setDescription("Description of film");
-        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1));
         film.setDuration(-1);
 
         Exception exception = assertThrows(EnterExeption.class, () -> filmController.addFilm(film));
@@ -101,9 +90,7 @@ public class FilmControllerTest {
         Film originalFilm = new Film();
         originalFilm.setName("Original Film");
         originalFilm.setDescription("Original description");
-        originalFilm.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        originalFilm.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1));
         originalFilm.setDuration(120);
 
         Film addedFilm = filmController.addFilm(originalFilm);
@@ -112,9 +99,7 @@ public class FilmControllerTest {
         updatedFilm.setId(addedFilm.getId());
         updatedFilm.setName("Updated Film");
         updatedFilm.setDescription("Updated description");
-        updatedFilm.setReleaseDate(LocalDate.of(2020, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        updatedFilm.setReleaseDate(LocalDate.of(2020, Month.JANUARY, 1));
         updatedFilm.setDuration(150);
 
         Film result = filmController.udateFilm(updatedFilm);
@@ -140,9 +125,7 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setName("Film");
         film.setDescription("Description");
-        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1)
-                .atStartOfDay(ZoneOffset.UTC)
-                .toInstant());
+        film.setReleaseDate(LocalDate.of(2000, Month.JANUARY, 1));
         film.setDuration(120);
 
         Film addedFilm = filmController.addFilm(film);
@@ -154,3 +137,4 @@ public class FilmControllerTest {
         assertEquals("Название не может быть пустым", exception.getMessage());
     }
 }
+

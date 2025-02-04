@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,16 +19,16 @@ public class FilmController {
 
     private final Map<Long, Film> films = new HashMap<>();
 
-    @GetMapping("/getFilm")
+    @GetMapping
     public Collection<Film> getAllFilms() {
         log.info("Получены фильмы: {}", films.values());
         return films.values();
     }
 
-    @PostMapping("/addFilm")
+    @PostMapping
     public Film addFilm(@RequestBody Film film) {
 
-        Instant minDateOfRelease = LocalDateTime.of(1895, 12, 28, 0, 0).toInstant(ZoneOffset.UTC);
+        LocalDate minDateOfRelease = LocalDate.of(1895,12,28);
 
         if (film.getName() == null || film.getName().trim().isEmpty()) {
             log.error("ОШИБКА: Пустое название фильма");
@@ -60,10 +58,10 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping("/updateFilm")
+    @PutMapping
     public Film udateFilm(@RequestBody Film newFilm) {
 
-        Instant minDateOfRelease = LocalDateTime.of(1895, 12, 28, 0, 0).toInstant(ZoneOffset.UTC);
+        LocalDate minDateOfRelease = LocalDate.of(1895,12,28);
 
         if (!films.containsKey(newFilm.getId())) {
             log.error("ОШИБКА: Фильм с таким ID не найден");

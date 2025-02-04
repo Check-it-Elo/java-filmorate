@@ -2,18 +2,15 @@ package ru.yandex.practicum.filmorate.testControllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
 
     private UserController userController;
@@ -29,7 +26,7 @@ public class UserControllerTest {
         user.setEmail("test@example.com");
         user.setLogin("testUser");
         user.setName("Test User");
-        user.setBirthday(Instant.parse("2000-01-01T00:00:00Z"));
+        user.setBirthday(LocalDate.of(2000, 1, 1));
 
         User addedUser = userController.addUser(user);
 
@@ -45,7 +42,7 @@ public class UserControllerTest {
         user.setEmail("invalid-email");
         user.setLogin("testUser");
         user.setName("Test User");
-        user.setBirthday(Instant.parse("2000-01-01T00:00:00Z"));
+        user.setBirthday(LocalDate.of(2000, 1, 1));
 
         EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.addUser(user));
 
@@ -58,7 +55,7 @@ public class UserControllerTest {
         user.setEmail("");
         user.setLogin("testUser");
         user.setName("Test User");
-        user.setBirthday(Instant.parse("2000-01-01T00:00:00Z"));
+        user.setBirthday(LocalDate.of(2000, 1, 1));
 
         EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.addUser(user));
 
@@ -71,7 +68,7 @@ public class UserControllerTest {
         user.setEmail("test@example.com");
         user.setLogin("testUser");
         user.setName("Test User");
-        user.setBirthday(Instant.parse("2000-01-01T00:00:00Z"));
+        user.setBirthday(LocalDate.of(2000, 1, 1));
 
         User addedUser = userController.addUser(user);
 
@@ -80,7 +77,7 @@ public class UserControllerTest {
         updatedUser.setEmail("newemail@example.com");
         updatedUser.setLogin("newLogin");
         updatedUser.setName("New Name");
-        updatedUser.setBirthday(Instant.parse("1995-05-05T00:00:00Z"));
+        updatedUser.setBirthday(LocalDate.of(1995, 5, 5));
 
         User returnedUser = userController.updateUser(updatedUser);
 
@@ -96,7 +93,7 @@ public class UserControllerTest {
         user.setEmail("test@example.com");
         user.setLogin("testUser");
         user.setName("Test User");
-        user.setBirthday(Instant.parse("2000-01-01T00:00:00Z"));
+        user.setBirthday(LocalDate.of(2000, 1, 1));
 
         User addedUser = userController.addUser(user);
 
@@ -105,7 +102,7 @@ public class UserControllerTest {
         updatedUser.setEmail("invalid-email");
         updatedUser.setLogin("newLogin");
         updatedUser.setName("New Name");
-        updatedUser.setBirthday(Instant.parse("1995-05-05T00:00:00Z"));
+        updatedUser.setBirthday(LocalDate.of(1995, 5, 5));
 
         EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.updateUser(updatedUser));
 
@@ -119,7 +116,7 @@ public class UserControllerTest {
         updatedUser.setEmail("newemail@example.com");
         updatedUser.setLogin("newLogin");
         updatedUser.setName("New Name");
-        updatedUser.setBirthday(Instant.parse("1995-05-05T00:00:00Z"));
+        updatedUser.setBirthday(LocalDate.of(1995, 5, 5));
 
         EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.updateUser(updatedUser));
 
@@ -132,13 +129,13 @@ public class UserControllerTest {
         user1.setEmail("user1@example.com");
         user1.setLogin("user1");
         user1.setName("User One");
-        user1.setBirthday(Instant.parse("2000-01-01T00:00:00Z"));
+        user1.setBirthday(LocalDate.of(2000, 1, 1));
 
         User user2 = new User();
         user2.setEmail("user2@example.com");
         user2.setLogin("user2");
         user2.setName("User Two");
-        user2.setBirthday(Instant.parse("2000-02-01T00:00:00Z"));
+        user2.setBirthday(LocalDate.of(2000, 2, 1));
 
         userController.addUser(user1);
         userController.addUser(user2);
@@ -149,3 +146,4 @@ public class UserControllerTest {
         assertEquals(2, allUsers.size());
     }
 }
+

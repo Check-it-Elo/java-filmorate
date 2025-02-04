@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +19,13 @@ public class UserController {
 
     private final Map<Long, User> users = new HashMap<>();
 
-    @GetMapping("/getUser")
+    @GetMapping
     public Collection<User> getAllUsers() {
         log.info("Получены пользователи: {}", users.values());
         return users.values();
     }
 
-    @PostMapping("/addUser")
+    @PostMapping
     public User addUser(@RequestBody User user) {
 
         log.info("Попытка добавления пользователя: {}", user);
@@ -62,7 +62,7 @@ public class UserController {
             user.setName(user.getLogin());
         }
 
-        if (user.getBirthday() == null || user.getBirthday().isAfter(Instant.now())) {
+        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
             log.error("ОШИБКА: Дата рождения не может быть в будущем или пустой");
             throw new EnterExeption("Дата рождения не может быть в будущем или пустой");
         }
@@ -75,7 +75,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/updateUser")
+    @PutMapping
     public User updateUser(@RequestBody User newUser) {
 
         if (newUser.getId() == null) {
@@ -103,7 +103,7 @@ public class UserController {
             throw new EnterExeption("Логин не может быть пустым или содержать пробелы");
         }
 
-        if (newUser.getBirthday() == null || newUser.getBirthday().isAfter(Instant.now())) {
+        if (newUser.getBirthday() == null || newUser.getBirthday().isAfter(LocalDate.now())) {
             log.error("ОШИБКА: Дата рождения не может быть в будущем или пустой");
             throw new EnterExeption("Дата рождения не может быть в будущем или пустой");
         }
