@@ -18,8 +18,8 @@ public class FilmController {
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     private final Map<Long, Film> films = new HashMap<>();
-    final LocalDate MIN_DATE_OF_RELEASE = LocalDate.of(1895,12,28);
-    final long MAX_DESCRIPTION_LENGTH = 200;
+    private static final LocalDate MIN_DATE_OF_RELEASE = LocalDate.of(1895,12,28);
+    private static final long MAX_DESCRIPTION_LENGTH = 200;
     private long idCounter = 1;
 
     @GetMapping
