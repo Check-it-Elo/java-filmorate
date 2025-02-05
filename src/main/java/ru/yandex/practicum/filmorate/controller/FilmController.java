@@ -18,6 +18,9 @@ public class FilmController {
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     private final Map<Long, Film> films = new HashMap<>();
+    final LocalDate MIN_DATE_OF_RELEASE = LocalDate.of(1895,12,28);
+    final long MAX_DESCRIPTION_LENGTH = 200;
+    private long idCounter = 1;
 
     @GetMapping
     public Collection<Film> getAllFilms() {
@@ -28,19 +31,17 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
 
-        LocalDate minDateOfRelease = LocalDate.of(1895,12,28);
-
         if (film.getName() == null || film.getName().trim().isEmpty()) {
             log.error("ОШИБКА: Пустое название фильма");
             throw new EnterExeption("Название не может быть пустым");
         }
 
-        if (film.getDescription().trim().length() > 200) {
+        if (film.getDescription().trim().length() > MAX_DESCRIPTION_LENGTH) {
             log.error("ОШИБКА: Длинна описания более 200 символов");
             throw new EnterExeption("Максимальная длина описания — 200 символов");
         }
 
-        if (film.getReleaseDate().isBefore(minDateOfRelease)) {
+        if (film.getReleaseDate().isBefore(MIN_DATE_OF_RELEASE)) {
             log.error("ОШИБКА: Дата меньше допустимой");
             throw new EnterExeption("Самая ранняя возможная дата релиза — не раньше 28 декабря 1895 года");
         }
@@ -50,7 +51,7 @@ public class FilmController {
             throw new EnterExeption("Продолжительность фильма должна быть положительным числом");
         }
 
-        film.setId(getNextFilmId());
+        film.setId(idCounter++);
         films.put(film.getId(), film);
 
         log.info("Фильм успешно добавлен: {}", film);
@@ -60,8 +61,6 @@ public class FilmController {
 
     @PutMapping
     public Film udateFilm(@RequestBody Film newFilm) {
-
-        LocalDate minDateOfRelease = LocalDate.of(1895,12,28);
 
         if (!films.containsKey(newFilm.getId())) {
             log.error("ОШИБКА: Фильм с таким ID не найден");
@@ -73,12 +72,12 @@ public class FilmController {
             throw new EnterExeption("Название не может быть пустым");
         }
 
-        if (newFilm.getDescription().trim().length() > 200) {
+        if (newFilm.getDescription().trim().length() > MAX_DESCRIPTION_LENGTH) {
             log.error("ОШИБКА: Длинна описания более 200 символов");
             throw new EnterExeption("Максимальная длина описания — 200 символов");
         }
 
-        if (newFilm.getReleaseDate().isBefore(minDateOfRelease)) {
+        if (newFilm.getReleaseDate().isBefore(MIN_DATE_OF_RELEASE)) {
             log.error("ОШИБКА: Дата меньше допустимой");
             throw new EnterExeption("Самая ранняя возможная дата релиза — не раньше 28 декабря 1895 года");
         }
@@ -112,16 +111,6 @@ public class FilmController {
 
         return newFilm;
 
-    }
-
-    // Вспомогательный метод для генерации идентификатора нового пользователя
-    private long getNextFilmId() {
-        long currentMaxId = films.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
     }
 
 }

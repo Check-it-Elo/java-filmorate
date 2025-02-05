@@ -16,6 +16,7 @@ import java.util.Map;
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private long idCounter = 1;
 
     private final Map<Long, User> users = new HashMap<>();
 
@@ -67,7 +68,7 @@ public class UserController {
             throw new EnterExeption("Дата рождения не может быть в будущем или пустой");
         }
 
-        user.setId(getNextUserId());
+        user.setId(idCounter++);
         users.put(user.getId(), user);
 
         log.info("Пользователь успешно добавлен: {}", user);
@@ -152,13 +153,4 @@ public class UserController {
         return newUser;
     }
 
-    // Вспомогательный метод для генерации идентификатора нового пользователя
-    private long getNextUserId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
-    }
 }
