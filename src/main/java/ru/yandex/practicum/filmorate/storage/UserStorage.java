@@ -13,5 +13,4 @@ public interface UserStorage {
     User updateUser(User newUser);
 
     User getUserById(Long id);
-    
 }
