@@ -14,4 +14,3 @@ public class Film {
     private long duration;
     private final Set<Long> likes = new HashSet<>();
 }
-
