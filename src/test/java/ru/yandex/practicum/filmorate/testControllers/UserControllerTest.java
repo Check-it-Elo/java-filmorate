@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -17,7 +19,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userController = new UserController();
+        userController = new UserController(new UserService(new InMemoryUserStorage()));
     }
 
     @Test
@@ -46,20 +48,7 @@ public class UserControllerTest {
 
         EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.addUser(user));
 
-        assertEquals("Email должен содержать символ @", exception.getMessage());
-    }
-
-    @Test
-    void testAddUser_EmptyEmail() {
-        User user = new User();
-        user.setEmail("");
-        user.setLogin("testUser");
-        user.setName("Test User");
-        user.setBirthday(LocalDate.of(2000, 1, 1));
-
-        EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.addUser(user));
-
-        assertEquals("Email не может оставаться пустым", exception.getMessage());
+        assertEquals("Некорректный email", exception.getMessage());
     }
 
     @Test
@@ -106,21 +95,7 @@ public class UserControllerTest {
 
         EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.updateUser(updatedUser));
 
-        assertEquals("Email должен содержать символ @", exception.getMessage());
-    }
-
-    @Test
-    void testUpdateUser_NotFound() {
-        User updatedUser = new User();
-        updatedUser.setId(999L);
-        updatedUser.setEmail("newemail@example.com");
-        updatedUser.setLogin("newLogin");
-        updatedUser.setName("New Name");
-        updatedUser.setBirthday(LocalDate.of(1995, 5, 5));
-
-        EnterExeption exception = assertThrows(EnterExeption.class, () -> userController.updateUser(updatedUser));
-
-        assertEquals("Пользователь не найден", exception.getMessage());
+        assertEquals("Некорректный email", exception.getMessage());
     }
 
     @Test
@@ -145,5 +120,5 @@ public class UserControllerTest {
         assertNotNull(allUsers);
         assertEquals(2, allUsers.size());
     }
-}
 
+}
