@@ -4,7 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
+import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -17,7 +22,11 @@ public class FilmControllerTest {
 
     @BeforeEach
     public void setUp() {
-        filmController = new FilmController();
+        InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
+        InMemoryUserStorage userStorage = new InMemoryUserStorage();
+        UserService userService = new UserService(userStorage);
+        FilmService filmService = new FilmService(filmStorage, userService);
+        filmController = new FilmController(filmService);
     }
 
     @Test
@@ -66,11 +75,13 @@ public class FilmControllerTest {
         Film film = new Film();
         film.setName("Film");
         film.setDescription("Description of film");
+
         film.setReleaseDate(LocalDate.of(1800, Month.JANUARY, 1));
         film.setDuration(120);
 
-        Exception exception = assertThrows(EnterExeption.class, () -> filmController.addFilm(film));
-        assertEquals("Самая ранняя возможная дата релиза — не раньше 28 декабря 1895 года", exception.getMessage());
+        EnterExeption exception = assertThrows(EnterExeption.class, () -> filmController.addFilm(film));
+
+        assertEquals("Дата релиза не может быть раньше 28 декабря 1895 года", exception.getMessage());
     }
 
     @Test
@@ -102,7 +113,7 @@ public class FilmControllerTest {
         updatedFilm.setReleaseDate(LocalDate.of(2020, Month.JANUARY, 1));
         updatedFilm.setDuration(150);
 
-        Film result = filmController.udateFilm(updatedFilm);
+        Film result = filmController.updateFilm(updatedFilm);  // Исправлено название метода с udateFilm на updateFilm
 
         assertEquals(updatedFilm.getName(), result.getName());
         assertEquals(updatedFilm.getDescription(), result.getDescription());
@@ -113,11 +124,12 @@ public class FilmControllerTest {
     @Test
     public void testUpdateFilmNotFound() {
         Film film = new Film();
-        film.setId(999L);
+        film.setId(999L);  // ID несуществующего фильма
         film.setName("Non-existent Film");
 
-        Exception exception = assertThrows(EnterExeption.class, () -> filmController.udateFilm(film));
-        assertEquals("Фильм не найден", exception.getMessage());
+        // Ожидаем исключение NotFoundException
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> filmController.updateFilm(film));
+        assertEquals("Фильм с ID 999 не найден", exception.getMessage());
     }
 
     @Test
@@ -133,8 +145,8 @@ public class FilmControllerTest {
         updatedFilm.setId(addedFilm.getId());
         updatedFilm.setName("");
 
-        Exception exception = assertThrows(EnterExeption.class, () -> filmController.udateFilm(updatedFilm));
+        Exception exception = assertThrows(EnterExeption.class, () -> filmController.updateFilm(updatedFilm));
         assertEquals("Название не может быть пустым", exception.getMessage());
     }
-}
 
+}
