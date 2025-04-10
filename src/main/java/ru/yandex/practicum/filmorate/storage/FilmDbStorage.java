@@ -208,4 +208,16 @@ public class FilmDbStorage implements FilmStorage {
         return result;
     }
 
+    @Override
+    public void validateMpaExists(int mpaId) {
+        Integer mpaCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM mpa WHERE id = ?",
+                Integer.class,
+                mpaId
+        );
+        if (mpaCount == null || mpaCount == 0) {
+            throw new NotFoundException("MPA с ID " + mpaId + " не найден");
+        }
+    }
+
 }

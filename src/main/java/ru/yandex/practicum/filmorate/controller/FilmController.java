@@ -3,18 +3,13 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/films")
@@ -22,12 +17,10 @@ public class FilmController {
 
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
     private final FilmService filmService;
-    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public FilmController(FilmService filmService, JdbcTemplate jdbcTemplate) {
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     @GetMapping
@@ -38,23 +31,11 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
+
         // Проверка, что MPA не null
         if (film.getMpa() == null) {
             throw new ValidationException("MPA должен быть указан");
         }
-
-        // Проверка жанров
-        if (film.getGenres() != null) {
-            Set<Integer> existingGenreIds = new HashSet<>(jdbcTemplate.queryForList(
-                    "SELECT id FROM genres", Integer.class));
-
-            for (Genre genre : film.getGenres()) {
-                if (!existingGenreIds.contains(genre.getId())) {
-                    throw new NotFoundException("Жанр с ID " + genre.getId() + " не найден");
-                }
-            }
-        }
-
         return filmService.addFilm(film);
     }
 

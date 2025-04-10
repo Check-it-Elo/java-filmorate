@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
@@ -30,18 +29,15 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final GenreService genreService;
-    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public FilmService(
             @Qualifier("filmDbStorage") FilmStorage filmStorage,
             @Qualifier("userDbStorage") UserStorage userStorage,
-            GenreService genreService,
-            JdbcTemplate jdbcTemplate) {
+            GenreService genreService) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.genreService = genreService;
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     public Collection<Film> getAllFilms() {
@@ -50,38 +46,22 @@ public class FilmService {
     }
 
     public Film addFilm(Film film) {
-
-        // Проверка существования MPA
-        Integer mpaCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM mpa WHERE id = ?",
-                Integer.class,
-                film.getMpa().getId()
-        );
-        if (mpaCount == null || mpaCount == 0) {
-            throw new NotFoundException("MPA с ID " + film.getMpa().getId() + " не найден");
-        }
-
-        // Проверка жанров
-        if (film.getGenres() != null) {
-            for (Genre genre : film.getGenres()) {
-                Integer genreCount = jdbcTemplate.queryForObject(
-                        "SELECT COUNT(*) FROM genres WHERE id = ?",
-                        Integer.class,
-                        genre.getId()
-                );
-                if (genreCount == null || genreCount == 0) {
-                    throw new NotFoundException("Жанр с ID " + genre.getId() + " не найден");
-                }
-            }
-        }
-
         if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
         }
 
         log.info("Попытка добавить фильм: {}", film);
-
         validateFilm(film);
+
+        // Проверка существования MPA через хранилище
+        filmStorage.validateMpaExists(film.getMpa().getId());
+
+        // Проверка жанров через GenreService
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                genreService.validateGenreExists(genre.getId());
+            }
+        }
 
         try {
             Film createdFilm = filmStorage.addFilm(film);

@@ -19,4 +19,7 @@ public interface FilmStorage {
     void removeLike(Long filmId, Long userId);
 
     Collection<Film> getFilmsByGenre(int genreId);
+
+    void validateMpaExists(int mpaId);
+
 }

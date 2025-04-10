@@ -24,4 +24,9 @@ public class GenreService {
     public Genre getGenreById(Integer id) {
         return genreStorage.getGenreById(id);
     }
+
+    public void validateGenreExists(int genreId) {
+        genreStorage.getGenreById(genreId);
+    }
+
 }
