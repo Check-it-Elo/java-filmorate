@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FilmService {
@@ -92,15 +91,9 @@ public class FilmService {
 
     public void addLike(Long filmId, Long userId) {
         Film film = getFilmById(filmId);
-        User user = getUserById(userId);
+        getUserById(userId);
 
-        if (film.getLikes().contains(userId)) {
-            log.warn("Пользователь {} уже ставил лайк фильму {}", userId, filmId);
-            throw new ValidationException("Пользователь уже ставил лайк этому фильму");
-        }
-
-        film.getLikes().add(userId);
-        filmStorage.updateFilm(film);
+        filmStorage.addLike(filmId, userId);
         log.info("Пользователь {} поставил лайк фильму {}", userId, filmId);
     }
 
@@ -123,12 +116,9 @@ public class FilmService {
             throw new ValidationException("Количество фильмов должно быть положительным числом");
         }
 
-        List<Film> popularFilms = filmStorage.getAllFilms().stream()
-                .sorted((f1, f2) -> Integer.compare(f1.getLikes().size(), f2.getLikes().size()))
-                .limit(count)
-                .collect(Collectors.toList());
+        List<Film> popularFilms = filmStorage.getMostPopularFilms(count);
 
-        log.info("Возвращено {} самых популярных фильмов", count);
+        log.info("Возвращено {} самых популярных фильмов", popularFilms.size());
         return popularFilms;
     }
 

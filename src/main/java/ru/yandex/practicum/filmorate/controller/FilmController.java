@@ -60,7 +60,7 @@ public class FilmController {
         return filmService.getMostPopularFilms(count);
     }
 
-    @GetMapping("/films/genre/{genreId}")
+    @GetMapping("/genre/{genreId}")
     public Collection<Film> getFilmsByGenre(@PathVariable int genreId) {
         return filmService.getFilmsByGenre(genreId);
     }
