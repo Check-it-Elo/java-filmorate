@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exeptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -30,7 +31,11 @@ public class FilmController {
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
-        log.info("Запрос: добавление фильма {}", film);
+
+        // Проверка, что MPA не null
+        if (film.getMpa() == null) {
+            throw new ValidationException("MPA должен быть указан");
+        }
         return filmService.addFilm(film);
     }
 
@@ -54,4 +59,16 @@ public class FilmController {
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getMostPopularFilms(count);
     }
+
+    @GetMapping("/genre/{genreId}")
+    public Collection<Film> getFilmsByGenre(@PathVariable int genreId) {
+        return filmService.getFilmsByGenre(genreId);
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Long id) {
+        log.info("Запрос: получение фильма с ID {}", id);
+        return filmService.getFilmById(id);
+    }
+
 }

@@ -6,9 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -45,6 +43,40 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getFilmById(Long id) {
         return films.get(id);
+    }
+
+    // ЗАГЛУШКИ ДЛЯ МЕТОДОВ //
+
+    @Override
+    public void addLike(Long filmId, Long userId) {
+        // Заглушка для in-memory реализации
+        log.info("Добавлен лайк фильму {} от пользователя {}", filmId, userId);
+    }
+
+    @Override
+    public void removeLike(Long filmId, Long userId) {
+        // Заглушка для in-memory реализации
+        log.info("Удалён лайк фильму {} от пользователя {}", filmId, userId);
+    }
+
+    @Override
+    public Collection<Film> getFilmsByGenre(int genreId) {
+        // Заглушка для in-memory реализации
+        log.info("Получение фильмов по жанру {}", genreId);
+        return getAllFilms();
+    }
+
+    @Override
+    public void validateMpaExists(int mpaId) {
+        // Заглушка для in-memory реализации
+        log.info("Проверка существования MPA с id {}", mpaId);
+    }
+
+    @Override
+    public List<Film> getMostPopularFilms(int count) {
+        // Заглушка для in-memory реализации
+        log.info("Заглушка: Получение самых популярных фильмов, ограничение на {}", count);
+        return new ArrayList<>(films.values()).subList(0, Math.min(count, films.size()));
     }
 
 }

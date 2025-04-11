@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -46,6 +47,34 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User getUserById(Long id) {
         return users.get(id);
+    }
+
+    // ЗАГЛУШКИ ДЛЯ МЕТОДОВ //
+
+    @Override
+    public void addFriend(Long userId, Long friendId) {
+        // Заглушка для in-memory реализации
+        log.info("Пользователь {} добавил в друзья пользователя {}", userId, friendId);
+    }
+
+    @Override
+    public void removeFriend(Long userId, Long friendId) {
+        // Заглушка для in-memory реализации
+        log.info("Пользователь {} удалил из друзей пользователя {}", userId, friendId);
+    }
+
+    @Override
+    public List<User> getUserFriends(Long userId) {
+        // Заглушка для in-memory реализации
+        log.info("Получение списка друзей пользователя {}", userId);
+        return List.of();
+    }
+
+    @Override
+    public List<User> getCommonFriends(Long userId, Long otherId) {
+        // Заглушка для in-memory реализации
+        log.info("Получение общих друзей пользователей {} и {}", userId, otherId);
+        return List.of();
     }
 
 }
