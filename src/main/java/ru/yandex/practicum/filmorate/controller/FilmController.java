@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -70,5 +71,25 @@ public class FilmController {
         log.info("Запрос: получение фильма с ID {}", id);
         return filmService.getFilmById(id);
     }
+
+    @PutMapping("/{filmId}/directors")
+    public void addDirectorsToFilm(@PathVariable Long filmId, @RequestBody List<Director> directors) {
+        log.info("Запрос: добавление режиссёров для фильма {}", filmId);
+        filmService.addDirectors(filmId, directors);
+    }
+
+    @DeleteMapping("/{filmId}/directors")
+    public void removeDirectorsFromFilm(@PathVariable Long filmId, @RequestBody List<Director> directors) {
+        log.info("Запрос: удаление режиссёров для фильма {}", filmId);
+        filmService.removeDirectors(filmId, directors);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getFilmsByDirectorSorted(
+            @PathVariable int directorId,
+            @RequestParam String sortBy) {
+        return filmService.getFilmsByDirectorSorted(directorId, sortBy);
+    }
+
 
 }

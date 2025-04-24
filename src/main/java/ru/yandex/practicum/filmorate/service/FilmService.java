@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
@@ -28,15 +29,18 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final GenreService genreService;
+    private final DirectorService directorService;
 
     @Autowired
     public FilmService(
             @Qualifier("filmDbStorage") FilmStorage filmStorage,
             @Qualifier("userDbStorage") UserStorage userStorage,
-            GenreService genreService) {
+            GenreService genreService,
+            DirectorService directorService) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.genreService = genreService;
+        this.directorService = directorService;
     }
 
     public Collection<Film> getAllFilms() {
@@ -62,6 +66,13 @@ public class FilmService {
             }
         }
 
+        // Проверка режиссёров
+        if (film.getDirectors() != null) {
+            for (Director director : film.getDirectors()) {
+                directorService.validateDirectorExists(director.getId());
+            }
+        }
+
         try {
             Film createdFilm = filmStorage.addFilm(film);
             log.info("Фильм добавлен: {}", createdFilm);
@@ -75,6 +86,14 @@ public class FilmService {
     public Film updateFilm(Film film) {
         getFilmById(film.getId());
         validateFilm(film);
+
+        // Проверка режиссёров
+        if (film.getDirectors() != null) {
+            for (Director director : film.getDirectors()) {
+                directorService.validateDirectorExists(director.getId());
+            }
+        }
+
         Film updatedFilm = filmStorage.updateFilm(film);
         log.info("Обновлен фильм: {}", updatedFilm);
         return updatedFilm;
@@ -135,6 +154,35 @@ public class FilmService {
         genreService.getGenreById(genreId);
         return filmStorage.getFilmsByGenre(genreId);
     }
+
+    public void addDirectors(Long filmId, List<Director> directors) {
+        Film film = getFilmById(filmId);
+
+        for (Director director : directors) {
+            directorService.validateDirectorExists(director.getId());
+        }
+
+        film.getDirectors().addAll(directors);
+        filmStorage.updateFilm(film);
+        log.info("Режиссёры {} добавлены к фильму {}", directors, filmId);
+    }
+
+    public void removeDirectors(Long filmId, List<Director> directors) {
+        Film film = getFilmById(filmId);
+
+        for (Director director : directors) {
+            film.getDirectors().removeIf(existing -> Integer.valueOf(existing.getId()).equals(director.getId()));
+        }
+
+        filmStorage.updateFilm(film);
+        log.info("Режиссёры {} удалены из фильма {}", directors, filmId);
+    }
+
+    public List<Film> getFilmsByDirectorSorted(int directorId, String sortBy) {
+        directorService.validateDirectorExists(directorId);
+        return filmStorage.getFilmsByDirectorSorted(directorId, sortBy);
+    }
+
 
     private void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
