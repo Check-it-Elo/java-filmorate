@@ -254,25 +254,23 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilmsByDirectorSorted(int directorId, String sortBy) {
-        String sortColumn;
+        String orderByClause;
         if ("likes".equalsIgnoreCase(sortBy)) {
-            sortColumn = "like_count";
+            orderByClause = "COUNT(fl.user_id) DESC, f.id"; // Сначала по лайкам (убывание), затем по id
         } else if ("year".equalsIgnoreCase(sortBy)) {
-            sortColumn = "f.release_date";
+            orderByClause = "f.release_date, f.id"; // По дате выпуска, затем по id
         } else {
             throw new IllegalArgumentException("Некорректное значение sortBy: " + sortBy);
         }
 
-        String sql = "SELECT f.*, COUNT(fl.user_id) AS like_count " +
-                "FROM films f " +
+        String sql = "SELECT f.* FROM films f " +
                 "JOIN film_directors fd ON f.id = fd.film_id " +
                 "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
                 "WHERE fd.director_id = ? " +
                 "GROUP BY f.id " +
-                "ORDER BY " + sortColumn;
+                "ORDER BY " + orderByClause;
 
         return jdbcTemplate.query(sql, this::mapRowToFilm, directorId);
     }
-
 
 }
