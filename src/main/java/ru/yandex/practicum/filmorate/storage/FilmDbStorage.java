@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPA;
@@ -70,6 +71,16 @@ public class FilmDbStorage implements FilmStorage {
             }
         }
 
+        // Сохраняем режиссёров
+        if (film.getDirectors() != null) {
+            for (Director director : film.getDirectors()) {
+                jdbcTemplate.update(
+                        "INSERT INTO film_directors (film_id, director_id) VALUES (?, ?)",
+                        filmId, director.getId()
+                );
+            }
+        }
+
         return film;
     }
 
@@ -94,6 +105,19 @@ public class FilmDbStorage implements FilmStorage {
                 jdbcTemplate.update(
                         "INSERT INTO film_genres (film_id, genre_id) VALUES (?, ?)",
                         film.getId(), genre.getId()
+                );
+            }
+        }
+
+        // Удаляем старых режиссёров
+        jdbcTemplate.update("DELETE FROM film_directors WHERE film_id = ?", film.getId());
+
+        // Добавляем актуальных режиссёров
+        if (film.getDirectors() != null) {
+            for (Director director : film.getDirectors()) {
+                jdbcTemplate.update(
+                        "INSERT INTO film_directors (film_id, director_id) VALUES (?, ?)",
+                        film.getId(), director.getId()
                 );
             }
         }
@@ -130,6 +154,13 @@ public class FilmDbStorage implements FilmStorage {
         List<Genre> genreList = jdbcTemplate.query(sqlGenres, (genreRs, genreRow) ->
                 new Genre(genreRs.getInt("id"), genreRs.getString("name")), filmId);
 
+        // Получение режиссёров
+        String sqlDirectors = "SELECT d.id, d.name FROM film_directors fd " +
+                "JOIN directors d ON fd.director_id = d.id " +
+                "WHERE fd.film_id = ?";
+        List<Director> directorList = jdbcTemplate.query(sqlDirectors, (directorRs, directorRow) ->
+                new Director(directorRs.getInt("id"), directorRs.getString("name")), filmId);
+
         // Получение лайков
         String sqlLikes = "SELECT user_id FROM film_likes WHERE film_id = ?";
         List<Long> likes = jdbcTemplate.query(sqlLikes,
@@ -144,6 +175,7 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(rs.getLong("duration"))
                 .mpa(mpa)
                 .genres(new HashSet<>(genreList))
+                .directors(new HashSet<>(directorList))
                 .likes(new HashSet<>(likes))
                 .build();
     }
@@ -218,6 +250,27 @@ public class FilmDbStorage implements FilmStorage {
         if (mpaCount == null || mpaCount == 0) {
             throw new NotFoundException("MPA с ID " + mpaId + " не найден");
         }
+    }
+
+    @Override
+    public List<Film> getFilmsByDirectorSorted(int directorId, String sortBy) {
+        String orderByClause;
+        if ("likes".equalsIgnoreCase(sortBy)) {
+            orderByClause = "COUNT(fl.user_id) DESC, f.id"; // Сначала по лайкам (убывание), затем по id
+        } else if ("year".equalsIgnoreCase(sortBy)) {
+            orderByClause = "f.release_date, f.id"; // По дате выпуска, затем по id
+        } else {
+            throw new IllegalArgumentException("Некорректное значение sortBy: " + sortBy);
+        }
+
+        String sql = "SELECT f.* FROM films f " +
+                "JOIN film_directors fd ON f.id = fd.film_id " +
+                "LEFT JOIN film_likes fl ON f.id = fl.film_id " +
+                "WHERE fd.director_id = ? " +
+                "GROUP BY f.id " +
+                "ORDER BY " + orderByClause;
+
+        return jdbcTemplate.query(sql, this::mapRowToFilm, directorId);
     }
 
 }

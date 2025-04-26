@@ -79,4 +79,11 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>(films.values()).subList(0, Math.min(count, films.size()));
     }
 
+    @Override
+    public List<Film> getFilmsByDirectorSorted(int directorId, String sortBy) {
+        // Заглушка для in-memory реализации
+        log.info("Заглушка: Получение фильмов по директору с id {} и сортировкой по {}", directorId, sortBy);
+        return new ArrayList<>();
+    }
+
 }

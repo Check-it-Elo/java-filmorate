@@ -17,6 +17,7 @@ public class Film {
     private MPA mpa;
     private Set<Genre> genres = new HashSet<>();
     private Set<Long> likes = new HashSet<>();
+    private Set<Director> directors = new HashSet<>();
 
     public Set<Long> getLikes() {
         if (likes == null) {

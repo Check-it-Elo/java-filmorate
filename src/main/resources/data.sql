@@ -56,3 +56,13 @@ VALUES
 INSERT INTO friendships (user_id, friend_id, friendship_status)
 VALUES
 (1, 2, 'CONFIRMED');
+
+
+
+-- Добавим режиссёров
+INSERT INTO directors (name) VALUES ('Квентин Тарантино'), ('Кристофер Нолан');
+
+-- Привяжем к фильмам
+INSERT INTO film_directors (film_id, director_id) VALUES
+(1, 1),  -- Film 1 -> Тарантино
+(2, 2);  -- Film 2 -> Нолан
