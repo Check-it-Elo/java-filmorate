@@ -80,6 +80,13 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
+    public List<Film> getMostPopularFilms(int count, Integer genreId, Integer year) {
+        log.info("Заглушка: Получение популярных фильмов с фильтрацией по жанру {} и году {}", genreId, year);
+        return getMostPopularFilms(count);
+    }
+
+
+    @Override
     public List<Film> getFilmsByDirectorSorted(int directorId, String sortBy) {
         // Заглушка для in-memory реализации
         log.info("Заглушка: Получение фильмов по директору с id {} и сортировкой по {}", directorId, sortBy);

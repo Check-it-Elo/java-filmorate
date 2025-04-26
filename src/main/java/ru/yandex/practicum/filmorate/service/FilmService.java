@@ -16,6 +16,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -129,13 +130,18 @@ public class FilmService {
         log.info("Пользователь {} удалил лайк у фильма {}", userId, filmId);
     }
 
-    public List<Film> getMostPopularFilms(int count) {
+    public List<Film> getMostPopularFilms(int count, Integer genreId, Integer year) {
         if (count <= 0) {
             log.error("Запрошено некорректное количество фильмов: {}", count);
             throw new ValidationException("Количество фильмов должно быть положительным числом");
         }
 
-        List<Film> popularFilms = filmStorage.getMostPopularFilms(count);
+        List<Film> popularFilms = new ArrayList<>();
+        if (genreId == null && year == null) {
+            popularFilms = filmStorage.getMostPopularFilms(count);
+        } else {
+            popularFilms = filmStorage.getMostPopularFilms(count, genreId, year);
+        }
 
         log.info("Возвращено {} самых популярных фильмов", popularFilms.size());
         return popularFilms;
