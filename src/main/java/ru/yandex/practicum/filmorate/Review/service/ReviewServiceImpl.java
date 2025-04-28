@@ -30,7 +30,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review updateReview(Review review) {
         checkUserAndFilmExists(review.getUserId(), review.getFilmId());
-        return  reviewRepository.updateReview(review);
+        return reviewRepository.updateReview(review);
 
     }
 
@@ -69,17 +69,17 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(Long id) {
-        Long userId = reviewRepository.findById(id).getUserId();
+        reviewRepository.findById(id).getUserId();
         reviewRepository.deleteReview(id);
     }
 
     private void checkUserAndFilmExists(Long userId, Long filmId) {
         User user = userRepository.getUserById(userId);
-        if (user == null ){
+        if (user == null) {
             throw new NotFoundException("Пользователь с ID " + userId + " не найден");
         }
         Film film = filmRepository.getFilmById(filmId);
-        if (film == null){
+        if (film == null) {
             throw new NotFoundException("Фильм с ID " + filmId + " не найден");
         }
     }
