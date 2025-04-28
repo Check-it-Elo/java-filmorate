@@ -23,4 +23,5 @@ public interface ReviewService {
     void removeDislikeReview(Long id, Long userId);
 
     void deleteReview(Long id);
+
 }

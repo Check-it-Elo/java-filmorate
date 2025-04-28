@@ -30,7 +30,7 @@ public class BaseRepository<T> {
     protected List<T> findMany(String query, Object... params) {
         return jdbc.query(query, mapper, params);
     }
-
+ 
     protected void update(String query, Object... params) {
         jdbc.update(query, params);
     }

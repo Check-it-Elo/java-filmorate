@@ -75,4 +75,5 @@ public class ReviewController {
     public void removeUserDislike(@PathVariable Long id, @PathVariable Long userId) {
         reviewService.removeDislikeReview(id, userId);
     }
+
 }

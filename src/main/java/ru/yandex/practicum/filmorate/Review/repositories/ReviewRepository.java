@@ -143,4 +143,5 @@ public class ReviewRepository extends BaseRepository<Review> implements ReviewSt
     public List<Review> findAllReviewsByCount(Long count) {
         return findMany(FIND_ALL_REVIEWS, count);
     }
+
 }

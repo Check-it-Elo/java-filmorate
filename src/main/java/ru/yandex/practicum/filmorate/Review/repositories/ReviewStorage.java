@@ -25,4 +25,5 @@ public interface ReviewStorage {
     List<Review> findAllReviewsByFilmIdAndCount(Long id, Long count);
 
     List<Review> findAllReviewsByCount(Long count);
+
 }
