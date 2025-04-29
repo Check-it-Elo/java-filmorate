@@ -206,6 +206,21 @@ public class FilmService {
         log.info("Фильм с ID {} успешно удалён", filmId);
     }
 
+    public List<Film> searchFilms(String query, String by) {
+        String normalized = by.trim().toLowerCase();
+        switch (normalized) {
+            case "title":
+                return filmStorage.searchByTitle(query);
+            case "director":
+                return filmStorage.searchByDirector(query);
+            case "title,director":
+            case "director,title":
+                return filmStorage.searchByTitleAndDirector(query);
+            default:
+                throw new ValidationException("Unsupported search parameter: " + by);
+        }
+    }
+
     private void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             log.error("Ошибка валидации: пустое название фильма");
