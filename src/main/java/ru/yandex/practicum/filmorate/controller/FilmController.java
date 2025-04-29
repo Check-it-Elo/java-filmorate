@@ -102,4 +102,10 @@ public class FilmController {
         filmService.deleteFilm(id);
     }
 
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query,
+                                  @RequestParam String by) {
+        return filmService.searchFilms(query, by);
+    }
+
 }
