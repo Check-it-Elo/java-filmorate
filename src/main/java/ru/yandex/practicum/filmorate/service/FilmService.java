@@ -33,11 +33,10 @@ public class FilmService {
     private final DirectorService directorService;
 
     @Autowired
-    public FilmService(
-            @Qualifier("filmDbStorage") FilmStorage filmStorage,
-            @Qualifier("userDbStorage") UserStorage userStorage,
-            GenreService genreService,
-            DirectorService directorService) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       GenreService genreService,
+                       DirectorService directorService) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.genreService = genreService;
@@ -145,6 +144,14 @@ public class FilmService {
 
         log.info("Возвращено {} самых популярных фильмов", popularFilms.size());
         return popularFilms;
+    }
+
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        getUserById(userId);
+        getUserById(friendId);
+        List<Film> commonFilms = filmStorage.getCommonFilms(userId, friendId);
+        log.info("Возвращено {} общих фильмов фильмов", commonFilms.size());
+        return commonFilms;
     }
 
     private User getUserById(Long userId) {
