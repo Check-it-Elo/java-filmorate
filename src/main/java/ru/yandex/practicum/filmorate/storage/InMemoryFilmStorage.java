@@ -119,7 +119,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>();
     }
 
-
     @Override
     public List<Film> getCommonFilms(Long userId, Long friendId) {
         // Заглушка для in-memory реализации
