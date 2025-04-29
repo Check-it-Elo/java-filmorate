@@ -30,4 +30,7 @@ public interface FilmStorage {
     List<Film> getFilmsByDirectorSorted(int directorId, String sortBy);
 
     void deleteFilm(Long id);
+
+    List<Film> getCommonFilms(Long userId, Long friendId);
+
 }

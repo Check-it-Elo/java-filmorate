@@ -100,4 +100,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         films.remove(filmId);
     }
+
+    @Override
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        // Заглушка для in-memory реализации
+        log.info("Заглушка: Получение общих фильмов для пользователей с id {} и id {}", userId, friendId);
+        return new ArrayList<>();
+    }
+
 }
