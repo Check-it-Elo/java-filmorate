@@ -77,4 +77,9 @@ public class InMemoryUserStorage implements UserStorage {
         return List.of();
     }
 
+    @Override
+    public void deleteUser(Long userId) {
+        users.remove(userId);
+    }
+
 }
