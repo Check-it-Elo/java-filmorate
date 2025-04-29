@@ -189,6 +189,15 @@ public class FilmService {
         return filmStorage.getFilmsByDirectorSorted(directorId, sortBy);
     }
 
+    public void deleteFilm(Long filmId) {
+        if (filmId <= 0) {
+            throw new ValidationException("Некорректный ID фильма: " + filmId);
+        }
+
+        getFilmById(filmId);
+        filmStorage.deleteFilm(filmId);
+        log.info("Фильм с ID {} успешно удалён", filmId);
+    }
 
     private void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {

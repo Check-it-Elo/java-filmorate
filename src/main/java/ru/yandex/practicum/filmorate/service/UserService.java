@@ -78,6 +78,12 @@ public class UserService {
         return userStorage.getCommonFriends(userId, otherId);
     }
 
+    public void deleteUser(Long userId) {
+        getUserById(userId);
+        userStorage.deleteUser(userId);
+        log.info("Пользователь с ID {} удален", userId);
+    }
+
     //Валидация пользователя
     private void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().trim().isEmpty() || !user.getEmail().contains("@")) {

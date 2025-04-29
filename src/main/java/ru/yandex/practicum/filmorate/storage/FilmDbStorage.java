@@ -224,10 +224,10 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         sql.append("""
-            GROUP BY f.id
-            ORDER BY COUNT(fl.user_id) DESC
-            LIMIT ?
-        """);
+                    GROUP BY f.id
+                    ORDER BY COUNT(fl.user_id) DESC
+                    LIMIT ?
+                """);
 
         params.add(count);
 
@@ -306,4 +306,12 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, this::mapRowToFilm, directorId);
     }
 
+    @Override
+    public void deleteFilm(Long id) {
+        String sql = "DELETE FROM films WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, id);
+        if (rowsAffected == 0) {
+            throw new NotFoundException("Фильм с ID " + id + " не найден");
+        }
+    }
 }
