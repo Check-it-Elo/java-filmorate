@@ -96,4 +96,5 @@ public class FilmController {
         return filmService.getCommonFilms(userId, friendId);
     }
 
+
 }
