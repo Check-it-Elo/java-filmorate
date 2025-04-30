@@ -93,6 +93,16 @@ public class FilmDbStorage implements FilmStorage {
                             film.getMpa().getId(),
                             film.getId());
 
+        // Сначала удаляем старые лайки
+        jdbcTemplate.update("DELETE FROM film_likes WHERE film_id = ?", film.getId());
+
+        // Затем вставляем актуальные лайки
+        if (film.getLikes() != null){
+            for (Long like: film.getLikes()){
+             addLike(film.getId(), like);
+            }
+        }
+
         // Сначала удаляем старые жанры
         jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?", film.getId());
 
@@ -200,8 +210,8 @@ public class FilmDbStorage implements FilmStorage {
         String sql = """
                 SELECT f.*
                 FROM films AS f
-                JOIN film_likes AS fl   ON fl.film_id = f.id
-                JOIN film_likes AS fll  ON fll.film_id = f.id
+                LEFT JOIN film_likes AS fl   ON fl.film_id = f.id
+                LEFT JOIN film_likes AS fll  ON fll.film_id = f.id
                 WHERE fl.user_id = ? AND fll.user_id = ?
                 GROUP BY f.id
                 ORDER BY COUNT(fl.user_id) DESC
