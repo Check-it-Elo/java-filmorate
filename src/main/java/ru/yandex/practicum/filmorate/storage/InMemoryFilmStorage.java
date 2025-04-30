@@ -125,6 +125,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("Заглушка: Получение общих фильмов для пользователей с id {} и id {}", userId, friendId);
         return new ArrayList<>();
     }
-
-
 }
