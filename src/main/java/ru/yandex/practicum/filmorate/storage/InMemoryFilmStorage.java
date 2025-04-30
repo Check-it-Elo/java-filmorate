@@ -100,4 +100,23 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
         films.remove(filmId);
     }
+
+    @Override
+    public List<Film> searchByTitle(String query) {
+        log.info("Заглушка: Поиск фильмов по названию содержащему '{}'", query);
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> searchByDirector(String query) {
+        log.info("Заглушка: Поиск фильмов по имени режиссёра содержащему '{}'", query);
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> searchByTitleAndDirector(String query) {
+        log.info("Заглушка: Поиск фильмов по названию или режиссёру содержащим '{}'", query);
+        return new ArrayList<>();
+    }
+
 }
