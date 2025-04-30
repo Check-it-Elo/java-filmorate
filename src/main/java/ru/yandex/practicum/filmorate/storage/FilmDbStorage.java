@@ -97,6 +97,16 @@ public class FilmDbStorage implements FilmStorage {
                 film.getId());
 
         // Сначала удаляем старые жанры
+        jdbcTemplate.update("DELETE FROM film_likes WHERE film_id = ?", film.getId());
+
+        // Затем вставляем актуальные лайки
+        if (film.getLikes() != null){
+            for(Long like : film.getLikes())
+            addLike(film.getId(), like);
+        }
+
+
+        // Сначала удаляем старые жанры
         jdbcTemplate.update("DELETE FROM film_genres WHERE film_id = ?", film.getId());
 
         // Затем вставляем актуальные жанры

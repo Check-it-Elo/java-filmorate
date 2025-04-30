@@ -111,4 +111,5 @@ public class FilmController {
                                   @RequestParam String by) {
         return filmService.searchFilms(query, by);
     }
+
 }
