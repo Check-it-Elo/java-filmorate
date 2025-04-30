@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Director;
@@ -107,10 +108,6 @@ public class FilmController {
     public List<Film> searchFilms(@RequestParam String query,
                                   @RequestParam String by) {
         return filmService.searchFilms(query, by);
-    }
-    @GetMapping("/common")
-    public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
-        return filmService.getCommonFilms(userId, friendId);
     }
 
 

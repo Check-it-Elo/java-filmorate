@@ -29,7 +29,6 @@ public interface FilmStorage {
 
     List<Film> getFilmsByDirectorSorted(int directorId, String sortBy);
 
-    List<Film> getCommonFilms(Long userId, Long friendId);
     void deleteFilm(Long id);
 
     List<Film> searchByTitle(String query);
