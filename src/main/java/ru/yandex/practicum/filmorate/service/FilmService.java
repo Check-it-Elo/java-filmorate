@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -31,16 +28,19 @@ public class FilmService {
     private final UserStorage userStorage;
     private final GenreService genreService;
     private final DirectorService directorService;
+    private final FeedService feedService;
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
                        @Qualifier("userDbStorage") UserStorage userStorage,
                        GenreService genreService,
-                       DirectorService directorService) {
+                       DirectorService directorService,
+                       FeedService feedService) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
         this.genreService = genreService;
         this.directorService = directorService;
+        this.feedService = feedService;
     }
 
     public Collection<Film> getAllFilms() {
@@ -113,6 +113,7 @@ public class FilmService {
         getUserById(userId);
 
         filmStorage.addLike(filmId, userId);
+        feedService.addEvent(userId, EventType.LIKE, EventOperation.ADD, filmId);
         log.info("Пользователь {} поставил лайк фильму {}", userId, filmId);
     }
 
@@ -126,6 +127,7 @@ public class FilmService {
 
         film.getLikes().remove(userId);
         filmStorage.updateFilm(film);
+        feedService.addEvent(userId, EventType.LIKE, EventOperation.REMOVE, filmId);
         log.info("Пользователь {} удалил лайк у фильма {}", userId, filmId);
     }
 

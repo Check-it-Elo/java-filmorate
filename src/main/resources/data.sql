@@ -5,6 +5,7 @@ DELETE FROM genres;
 DELETE FROM mpa;
 DELETE FROM friendships;
 DELETE FROM users;
+DELETE FROM feed;
 
 -- Заполнение жанров
 INSERT INTO genres (id, name) VALUES
@@ -66,3 +67,4 @@ INSERT INTO directors (name) VALUES ('Квентин Тарантино'), ('К�
 INSERT INTO film_directors (film_id, director_id) VALUES
 (1, 1),  -- Film 1 -> Тарантино
 (2, 2);  -- Film 2 -> Нолан
+

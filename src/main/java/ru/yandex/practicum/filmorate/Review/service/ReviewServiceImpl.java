@@ -5,8 +5,11 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.Review.model.Review;
 import ru.yandex.practicum.filmorate.Review.repositories.ReviewStorage;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
+import ru.yandex.practicum.filmorate.model.EventOperation;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
@@ -19,19 +22,23 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewStorage reviewRepository;
     private final FilmDbStorage filmRepository;
     private final UserDbStorage userRepository;
+    private final FeedService feedService;
 
     @Override
     public Review addReview(Review review) {
         checkUserAndFilmExists(review.getUserId(), review.getFilmId());
-        return reviewRepository.addReview(review);
+        Review createdReview = reviewRepository.addReview(review);
+        feedService.addEvent(createdReview.getUserId(), EventType.REVIEW, EventOperation.ADD, createdReview.getReviewId());
+        return createdReview;
     }
 
 
     @Override
     public Review updateReview(Review review) {
         checkUserAndFilmExists(review.getUserId(), review.getFilmId());
-        return reviewRepository.updateReview(review);
-
+        Review updatedReview = reviewRepository.updateReview(review);
+        feedService.addEvent(updatedReview.getUserId(), EventType.REVIEW, EventOperation.UPDATE, updatedReview.getReviewId());
+        return updatedReview;
     }
 
     @Override
@@ -69,7 +76,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(Long id) {
-        reviewRepository.findById(id).getUserId();
+        Review review = reviewRepository.findById(id);
+        feedService.addEvent(review.getUserId(), EventType.REVIEW, EventOperation.REMOVE, id);
         reviewRepository.deleteReview(id);
     }
 
