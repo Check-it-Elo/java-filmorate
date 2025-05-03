@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.EventOperation;
+import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.model.Event;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,10 +24,12 @@ public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserStorage userStorage;
+    private final FeedService feedService;
 
     @Autowired
-    public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, FeedService feedService) {
         this.userStorage = userStorage;
+        this.feedService = feedService;
     }
 
     public List<User> getAllUsers() {
@@ -57,6 +62,7 @@ public class UserService {
         getUserById(userId);
         getUserById(friendId);
         userStorage.addFriend(userId, friendId);
+        feedService.addEvent(userId, EventType.FRIEND, EventOperation.ADD, friendId);
         log.info("Пользователи {} и {} теперь друзья", userId, friendId);
     }
 
@@ -64,6 +70,7 @@ public class UserService {
         getUserById(userId);
         getUserById(friendId);
         userStorage.removeFriend(userId, friendId);
+        feedService.addEvent(userId, EventType.FRIEND, EventOperation.REMOVE, friendId);
         log.info("Пользователь {} удалил из друзей {}", userId, friendId);
     }
 
@@ -82,6 +89,10 @@ public class UserService {
         getUserById(userId);
         userStorage.deleteUser(userId);
         log.info("Пользователь с ID {} удален", userId);
+    }
+
+    public List<Event> getUserFeed(Long userId) {
+        return feedService.getUserFeed(userId);
     }
 
     //Валидация пользователя
