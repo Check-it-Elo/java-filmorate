@@ -87,4 +87,5 @@ public class RecommendationDbStorage {
                    .genres(new HashSet<>(genreList))
                    .build();
     }
+
 }

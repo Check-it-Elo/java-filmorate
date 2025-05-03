@@ -106,6 +106,7 @@ public class FilmService {
             throw new NotFoundException("Фильм с ID " + id + " не найден");
         }
         return film;
+
     }
 
     public void addLike(Long filmId, Long userId) {

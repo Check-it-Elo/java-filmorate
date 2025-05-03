@@ -60,5 +60,4 @@ public class DirectorService {
             throw new NotFoundException("Режиссёр с ID " + directorId + " не найден");
         }
     }
-
 }

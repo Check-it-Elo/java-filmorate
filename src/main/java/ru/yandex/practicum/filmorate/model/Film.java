@@ -34,4 +34,5 @@ public class Film {
         return genres.stream().sorted(Comparator.comparing(Genre::getId)) // Или любое другое правило сортировки
                      .collect(Collectors.toList());
     }
+
 }
