@@ -358,13 +358,25 @@ public class FilmDbStorage implements FilmStorage {
         return jdbcTemplate.query(sql, this::mapRowToFilm, "%" + query + "%");
     }
 
+//    @Override
+//    public List<Film> searchByTitleAndDirector(String query) {
+//        String sql = "SELECT f.* FROM films f " +
+//                     "LEFT JOIN film_directors fd ON f.id = fd.film_id " +
+//                     "LEFT JOIN directors d ON fd.director_id = d.id " +
+//                     "WHERE LOWER(f.name) LIKE LOWER(?) OR LOWER(d.name) LIKE LOWER(?)";
+//        return jdbcTemplate.query(sql, this::mapRowToFilm, "%" + query + "%", "%" + query + "%");
+//    }
+
     @Override
     public List<Film> searchByTitleAndDirector(String query) {
         String sql = "SELECT f.* FROM films f " +
-                     "LEFT JOIN film_directors fd ON f.id = fd.film_id " +
-                     "LEFT JOIN directors d ON fd.director_id = d.id " +
-                     "WHERE LOWER(f.name) LIKE LOWER(?) OR LOWER(d.name) LIKE LOWER(?)";
-        return jdbcTemplate.query(sql, this::mapRowToFilm, "%" + query + "%", "%" + query + "%");
+                "LEFT JOIN film_directors fd ON f.id = fd.film_id " +
+                "LEFT JOIN directors d ON fd.director_id = d.id " +
+                "WHERE LOWER(f.name) LIKE LOWER(?) OR LOWER(d.name) LIKE LOWER(?) " +
+                "ORDER BY f.id DESC";
+
+        return jdbcTemplate.query(sql, this::mapRowToFilm,
+                "%" + query + "%", "%" + query + "%");
     }
 
 }

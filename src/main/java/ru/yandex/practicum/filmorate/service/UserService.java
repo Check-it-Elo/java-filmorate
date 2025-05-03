@@ -41,9 +41,22 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
     }
 
+//    public User addUser(User user) {
+//        validateUser(user);
+//        return userStorage.addUser(user);
+//    }
+
     public User addUser(User user) {
-        validateUser(user);
-        return userStorage.addUser(user);
+        try {
+            validateUser(user);
+            return userStorage.addUser(user);
+        } catch (EnterExeption e) {
+            log.error("Validation error when adding user: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            log.error("Error when adding user: {}", e.getMessage());
+            throw new RuntimeException("Internal server error when creating user", e);
+        }
     }
 
     public User updateUser(User user) {
@@ -96,21 +109,40 @@ public class UserService {
     }
 
     //Валидация пользователя
+//    private void validateUser(User user) {
+//        if (user.getEmail() == null || user.getEmail().trim().isEmpty() || !user.getEmail().contains("@")) {
+//            log.error("Ошибка валидации: некорректный email {}", user.getEmail());
+//            throw new EnterExeption("Некорректный email");
+//        }
+//        if (user.getLogin().trim().isEmpty() || user.getLogin().contains(" ")) {
+//            log.error("Ошибка валидации: логин не может быть пустым или содержать пробелы {}", user.getLogin());
+//            throw new EnterExeption("Логин не может быть пустым или содержать пробелы");
+//        }
+//        if (user.getName() == null || user.getName().isEmpty()) {
+//            log.info("Имя пользователя установлено по умолчанию как логин: {}", user.getLogin());
+//            user.setName(user.getLogin());
+//        }
+//        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
+//            log.error("Ошибка валидации: некорректная дата рождения {}", user.getBirthday());
+//            throw new EnterExeption("Некорректная дата рождения");
+//        }
+//    }
+
     private void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().trim().isEmpty() || !user.getEmail().contains("@")) {
-            log.error("Ошибка валидации: некорректный email {}", user.getEmail());
+            log.error("Validation error: Invalid email {}", user.getEmail());
             throw new EnterExeption("Некорректный email");
         }
-        if (user.getLogin().trim().isEmpty() || user.getLogin().contains(" ")) {
-            log.error("Ошибка валидации: логин не может быть пустым или содержать пробелы {}", user.getLogin());
+        if (user.getLogin() == null || user.getLogin().trim().isEmpty() || user.getLogin().contains(" ")) {
+            log.error("Validation error: Login cannot be empty or contain spaces {}", user.getLogin());
             throw new EnterExeption("Логин не может быть пустым или содержать пробелы");
         }
         if (user.getName() == null || user.getName().isEmpty()) {
-            log.info("Имя пользователя установлено по умолчанию как логин: {}", user.getLogin());
+            log.info("Name is empty, setting to login: {}", user.getLogin());
             user.setName(user.getLogin());
         }
         if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("Ошибка валидации: некорректная дата рождения {}", user.getBirthday());
+            log.error("Validation error: Invalid birthday {}", user.getBirthday());
             throw new EnterExeption("Некорректная дата рождения");
         }
     }
