@@ -2,9 +2,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
+
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -26,11 +27,11 @@ public class Film {
         return likes;
     }
 
-    public Set<Genre> getGenres() {
+    public List<Genre> getGenres() {
         if (genres == null) {
             genres = new HashSet<>();
         }
-        return genres;
+        return genres.stream().sorted(Comparator.comparing(Genre::getId)) // Или любое другое правило сортировки
+                     .collect(Collectors.toList());
     }
-
 }

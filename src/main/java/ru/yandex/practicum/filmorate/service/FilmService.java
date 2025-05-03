@@ -195,7 +195,11 @@ public class FilmService {
 
     public List<Film> getFilmsByDirectorSorted(int directorId, String sortBy) {
         directorService.validateDirectorExists(directorId);
-        return filmStorage.getFilmsByDirectorSorted(directorId, sortBy);
+        List<Film> films = filmStorage.getFilmsByDirectorSorted(directorId, sortBy);
+        if (films.isEmpty()) {
+            throw new NotFoundException("Фильмы с указанным id " + directorId + " режиссёра отсутствуют");
+        }
+        return films;
     }
 
     public void deleteFilm(Long filmId) {

@@ -19,6 +19,11 @@ public class DirectorService {
     }
 
     public Director create(Director director) {
+
+        if (director.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Director has empty name ");
+        }
+
         directorStorage.findByName(director.getName()).ifPresent(existingDirector -> {
             throw new IllegalArgumentException("Director with name '" + director.getName() + "' already exists.");
         });
@@ -28,7 +33,9 @@ public class DirectorService {
 
     public Director update(Director director) {
         Director existingDirector = directorStorage.findById(director.getId())
-                .orElseThrow(() -> new NotFoundException("Director with id " + director.getId() + " not found"));
+                                                   .orElseThrow(() -> new NotFoundException("Director with id " +
+                                                                                            director.getId() +
+                                                                                            " not found"));
 
         return directorStorage.update(director);
     }
@@ -41,7 +48,7 @@ public class DirectorService {
 
     public Director findById(int id) {
         return directorStorage.findById(id)
-                .orElseThrow(() -> new NotFoundException("Director with id " + id + " not found"));
+                              .orElseThrow(() -> new NotFoundException("Director with id " + id + " not found"));
     }
 
     public List<Director> findAll() {
