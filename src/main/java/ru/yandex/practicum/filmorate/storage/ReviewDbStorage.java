@@ -1,10 +1,10 @@
-package ru.yandex.practicum.filmorate.Review.repositories;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.Review.model.Review;
+import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 
 import java.sql.ResultSet;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Repository
-public class ReviewRepository extends BaseRepository<Review> implements ReviewStorage {
+public class ReviewDbStorage extends BaseRepository<Review> implements ReviewStorage {
 
     private static final String GET_BY_ID = """
             SELECT r.*, (SELECT sum(type) FROM reviews_likes WHERE review_id = r.review_id GROUP BY review_id) as useful
@@ -59,7 +59,7 @@ public class ReviewRepository extends BaseRepository<Review> implements ReviewSt
     private static final String GET_LIKE = """
             SELECT * FROM reviews_likes WHERE review_id = ? AND user_id = ?""";
 
-    public ReviewRepository(JdbcTemplate jdbc, RowMapper<Review> mapper) {
+    public ReviewDbStorage(JdbcTemplate jdbc, RowMapper<Review> mapper) {
         super(jdbc, mapper);
     }
 

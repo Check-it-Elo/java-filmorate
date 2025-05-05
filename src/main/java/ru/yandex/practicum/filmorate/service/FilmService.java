@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
@@ -48,6 +49,7 @@ public class FilmService {
         return filmStorage.getAllFilms();
     }
 
+    @Transactional
     public Film addFilm(Film film) {
         if (film.getLikes() == null) {
             film.setLikes(new HashSet<>());
@@ -83,6 +85,7 @@ public class FilmService {
         }
     }
 
+    @Transactional
     public Film updateFilm(Film film) {
         getFilmById(film.getId());
         validateFilm(film);
@@ -203,6 +206,7 @@ public class FilmService {
         return films;
     }
 
+    @Transactional
     public void deleteFilm(Long filmId) {
         if (filmId <= 0) {
             throw new ValidationException("Некорректный ID фильма: " + filmId);

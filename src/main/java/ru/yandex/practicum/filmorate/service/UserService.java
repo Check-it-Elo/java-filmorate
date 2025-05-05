@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.filmorate.exeptions.EnterExeption;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
@@ -41,11 +42,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь с ID " + userId + " не найден"));
     }
 
-//    public User addUser(User user) {
-//        validateUser(user);
-//        return userStorage.addUser(user);
-//    }
-
+    @Transactional
     public User addUser(User user) {
         try {
             validateUser(user);
@@ -59,6 +56,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public User updateUser(User user) {
         validateUser(user);
         // Добавляем проверку на существование пользователя
@@ -98,6 +96,7 @@ public class UserService {
         return userStorage.getCommonFriends(userId, otherId);
     }
 
+    @Transactional
     public void deleteUser(Long userId) {
         getUserById(userId);
         userStorage.deleteUser(userId);
@@ -107,26 +106,6 @@ public class UserService {
     public List<Event> getUserFeed(Long userId) {
         return feedService.getUserFeed(userId);
     }
-
-    //Валидация пользователя
-//    private void validateUser(User user) {
-//        if (user.getEmail() == null || user.getEmail().trim().isEmpty() || !user.getEmail().contains("@")) {
-//            log.error("Ошибка валидации: некорректный email {}", user.getEmail());
-//            throw new EnterExeption("Некорректный email");
-//        }
-//        if (user.getLogin().trim().isEmpty() || user.getLogin().contains(" ")) {
-//            log.error("Ошибка валидации: логин не может быть пустым или содержать пробелы {}", user.getLogin());
-//            throw new EnterExeption("Логин не может быть пустым или содержать пробелы");
-//        }
-//        if (user.getName() == null || user.getName().isEmpty()) {
-//            log.info("Имя пользователя установлено по умолчанию как логин: {}", user.getLogin());
-//            user.setName(user.getLogin());
-//        }
-//        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
-//            log.error("Ошибка валидации: некорректная дата рождения {}", user.getBirthday());
-//            throw new EnterExeption("Некорректная дата рождения");
-//        }
-//    }
 
     private void validateUser(User user) {
         if (user.getEmail() == null || user.getEmail().trim().isEmpty() || !user.getEmail().contains("@")) {

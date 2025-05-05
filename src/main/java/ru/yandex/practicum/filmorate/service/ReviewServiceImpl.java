@@ -1,15 +1,15 @@
-package ru.yandex.practicum.filmorate.Review.service;
+package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.Review.model.Review;
-import ru.yandex.practicum.filmorate.Review.repositories.ReviewStorage;
+import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 import ru.yandex.practicum.filmorate.exeptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.EventOperation;
 import ru.yandex.practicum.filmorate.model.EventType;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.FeedService;
 import ru.yandex.practicum.filmorate.storage.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.UserDbStorage;
 
@@ -25,6 +25,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final FeedService feedService;
 
     @Override
+    @Transactional
     public Review addReview(Review review) {
         checkUserAndFilmExists(review.getUserId(), review.getFilmId());
         Review createdReview = reviewRepository.addReview(review);
@@ -34,6 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     @Override
+    @Transactional
     public Review updateReview(Review review) {
         checkUserAndFilmExists(review.getUserId(), review.getFilmId());
         Review updatedReview = reviewRepository.updateReview(review);
@@ -75,6 +77,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    @Transactional
     public void deleteReview(Long id) {
         Review review = reviewRepository.findById(id);
         feedService.addEvent(review.getUserId(), EventType.REVIEW, EventOperation.REMOVE, id);

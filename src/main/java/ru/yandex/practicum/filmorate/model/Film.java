@@ -35,4 +35,14 @@ public class Film {
                      .collect(Collectors.toList());
     }
 
+    // Дополнительный метод для получения отсортированного списка
+    public List<Genre> getSortedGenres() {
+        if (genres == null) {
+            return Collections.emptyList();
+        }
+        return genres.stream()
+                .sorted(Comparator.comparing(Genre::getId))
+                .collect(Collectors.toList());
+    }
+
 }

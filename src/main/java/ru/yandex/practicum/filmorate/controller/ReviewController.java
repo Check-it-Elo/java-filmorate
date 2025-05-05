@@ -1,16 +1,15 @@
-package ru.yandex.practicum.filmorate.Review.controller;
+package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.Review.model.Review;
-import ru.yandex.practicum.filmorate.Review.service.ReviewService;
+import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.ReviewService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/reviews")
