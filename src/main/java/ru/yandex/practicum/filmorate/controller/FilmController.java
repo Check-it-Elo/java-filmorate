@@ -3,8 +3,10 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exeptions.ValidationException;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
@@ -56,8 +58,10 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
-        return filmService.getMostPopularFilms(count);
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count,
+                                      @RequestParam(required = false) Integer genreId,
+                                      @RequestParam(required = false) Integer year) {
+        return filmService.getMostPopularFilms(count, genreId, year);
     }
 
     @GetMapping("/genre/{genreId}")
@@ -69,6 +73,43 @@ public class FilmController {
     public Film getFilmById(@PathVariable Long id) {
         log.info("Запрос: получение фильма с ID {}", id);
         return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{filmId}/directors")
+    public void addDirectorsToFilm(@PathVariable Long filmId, @RequestBody List<Director> directors) {
+        log.info("Запрос: добавление режиссёров для фильма {}", filmId);
+        filmService.addDirectors(filmId, directors);
+    }
+
+    @DeleteMapping("/{filmId}/directors")
+    public void removeDirectorsFromFilm(@PathVariable Long filmId, @RequestBody List<Director> directors) {
+        log.info("Запрос: удаление режиссёров для фильма {}", filmId);
+        filmService.removeDirectors(filmId, directors);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getFilmsByDirectorSorted(
+            @PathVariable int directorId,
+            @RequestParam String sortBy) {
+        return filmService.getFilmsByDirectorSorted(directorId, sortBy);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteFilm(@PathVariable Long id) {
+        log.info("Запрос: удаление фильма с ID {}", id);
+        filmService.deleteFilm(id);
+    }
+
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(@RequestParam Long userId, @RequestParam Long friendId) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
+
+    @GetMapping("/search")
+    public List<Film> searchFilms(@RequestParam String query,
+                                  @RequestParam String by) {
+        return filmService.searchFilms(query, by);
     }
 
 }

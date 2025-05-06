@@ -79,4 +79,51 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>(films.values()).subList(0, Math.min(count, films.size()));
     }
 
+    @Override
+    public List<Film> getMostPopularFilms(int count, Integer genreId, Integer year) {
+        log.info("Заглушка: Получение популярных фильмов с фильтрацией по жанру {} и году {}", genreId, year);
+        return getMostPopularFilms(count);
+    }
+
+
+    @Override
+    public List<Film> getFilmsByDirectorSorted(int directorId, String sortBy) {
+        // Заглушка для in-memory реализации
+        log.info("Заглушка: Получение фильмов по директору с id {} и сортировкой по {}", directorId, sortBy);
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void deleteFilm(Long filmId) {
+        if (!films.containsKey(filmId)) {
+            throw new NotFoundException("Фильм с ID " + filmId + " не найден");
+        }
+        films.remove(filmId);
+    }
+
+    @Override
+    public List<Film> searchByTitle(String query) {
+        log.info("Заглушка: Поиск фильмов по названию содержащему '{}'", query);
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> searchByDirector(String query) {
+        log.info("Заглушка: Поиск фильмов по имени режиссёра содержащему '{}'", query);
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> searchByTitleAndDirector(String query) {
+        log.info("Заглушка: Поиск фильмов по названию или режиссёру содержащим '{}'", query);
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+        // Заглушка для in-memory реализации
+        log.info("Заглушка: Получение общих фильмов для пользователей с id {} и id {}", userId, friendId);
+        return new ArrayList<>();
+    }
+
 }
